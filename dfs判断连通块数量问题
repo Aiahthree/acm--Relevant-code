@@ -1,0 +1,52 @@
+//题目：http://ybt.ssoier.cn:8088/problem_show.php?pid=1335
+//两个for循环遍历每一块区域的某一个点 ，然后用dfs对该块区域所有点进行标记
+#include<iostream>
+#include<string>
+#include<cstdio>
+#include<string.h>
+using namespace std;
+int n,m;
+int a[105][105];
+int vis[105][105];
+int cnt=0;
+int turn[4][2]={{1,0},{-1,0},{0,1},{0,-1}};
+void dfs(int x,int y)
+{
+    if(x>n||y>m)
+        return;
+    for(int i=0;i<4;i++)
+    {
+        int tx=x+turn[i][0];
+        int ty=y+turn[i][1];
+        if(a[tx][ty]==1&&vis[tx][ty]==0)
+        {
+            vis[tx][ty]=1;
+            a[tx][ty]=0;//防止陷入死循环
+            dfs(tx,ty);
+        }
+    }
+}
+int main()
+{
+    cin>>n>>m;
+    for(int i=1;i<=n;i++)
+        for(int j=1;j<=m;j++)
+        cin>>a[i][j];
+    memset(vis,0,sizeof(vis));
+    
+    for(int i=1;i<=n;i++)
+        for(int j=1;j<=m;j++)
+        {
+            if(a[i][j]==1&&vis[i][j]==0)//遍历每一块区域的某一个点  然后用dfs对该块区域所有点进行标记
+            {
+                a[i][j]=0;
+                vis[i][j]=1;
+                dfs(i,j);
+                cnt++;
+            }
+        }
+    cout<<cnt<<endl;
+}
+//注意：这里很容易犯一个错误，就是把数组a的下标定为0开始，这是个false!!!!!!
+//原因：我们走四个方向是对该点坐标的x,y进行加一减一操作而进行，但是如果你下标是0，减一就是在下标越界!!!
+//解决：下标起始定为1
